@@ -1,16 +1,17 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from iaas.client import client_factory
+from iaas.enums import Providers
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+8 to toggle the breakpoint.
+def main():
+    client = client_factory(Providers.ORACLE)
+    all_vms = client.get_all_vms()
+    for vm in all_vms:
+        if vm.state.upper() == "STOPPED":
+            print(f"{vm.display_name} not running. Starting....")
+            client.start_vm(vm)
+        else:
+            print(f"{vm.display_name} -> {vm.state}")
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
