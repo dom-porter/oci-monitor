@@ -1,37 +1,44 @@
+import logging
 from typing import Protocol, List
 from iaas.enums import Providers
 from iaas.vm import VirtualMachine, oracle_vm_factory
 from oci import config
 from oci.core import ComputeClient, VirtualNetworkClient
-from oci.exceptions import ServiceError
+from oci.exceptions import ServiceError, InvalidConfig
+
+logger = logging.getLogger("iaas")
 
 
 class Client(Protocol):
     """ Used as an interface for all IaaS API clients """
 
     def get_all_vms(self) -> List:
-        return []
+        pass
 
     def stop_vm(self, vm: VirtualMachine) -> str:
-        return ""
+        pass
 
     def start_vm(self, vm: VirtualMachine) -> str:
-        return ""
+        pass
 
     def restart_vm(self, vm: VirtualMachine) -> str:
-        return ""
+        pass
 
     def get_public_ips(self, vm: VirtualMachine) -> List:
-        return []
+        pass
 
 
 class OracleClient:
     """ Oracle Cloud client """
 
     def __init__(self):
-        self._config = config.from_file(file_location="./config/oracle.ini")
-        config.validate_config(self._config)  # Raises InvalidConfig exception if config not correct
-        self._compute_client = ComputeClient(self._config)
+        try:
+            self._config = config.from_file(file_location="./config/oracle.ini")
+            config.validate_config(self._config)  # Raises InvalidConfig exception if config not correct - allegedly
+            self._compute_client = ComputeClient(self._config)
+        except InvalidConfig as e:
+            print(e)
+            logger.error(e)
 
     def get_all_vms(self) -> List:
         """ Returns a list of VirtualMachine class instances """
@@ -41,7 +48,8 @@ class OracleClient:
             return_list = [oracle_vm_factory(vm) for vm in vm_instances]
             return return_list
         except ServiceError as s:
-            print(f"ERROR: failed to obtain a list of compute VM instances due to '{s.message}'")
+            print(f"ERROR: failed to obtain a list of compute VM instances: '{s.message}'")
+            logger.error(f"failed to obtain a list of compute VM instances: '{s.message}'")
             return []
 
     def stop_vm(self, vm: VirtualMachine) -> str:
@@ -74,8 +82,7 @@ class OracleClient:
             instance_id=vm.vm_id
         ).data
 
-        # get a list of vNICs from the vNIC attachement. Most often you
-        # find a single vNIC, but it's possible to have multiple.
+        # get a list of vNICs from the vNIC attachment. Possible to have multiple.
         vnics = [virtual_network_client.get_vnic(va.vnic_id).data for va in vnic_attachments]
         for vnic in vnics:
             if vnic.public_ip:
@@ -87,19 +94,19 @@ class AWSClient:
     """ TO DO """
 
     def get_all_vms(self) -> List:
-        return []
+        pass
 
     def stop_vm(self, vm: VirtualMachine) -> str:
-        return ""
+        pass
 
     def start_vm(self, vm: VirtualMachine) -> str:
-        return ""
+        pass
 
     def restart_vm(self, vm: VirtualMachine) -> str:
-        return ""
+        pass
 
     def get_public_ips(self, vm: VirtualMachine) -> List:
-        return []
+        pass
 
 
 FACTORIES = {

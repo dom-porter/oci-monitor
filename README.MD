@@ -1,84 +1,49 @@
-get comparment id
-
-https://docs.oracle.com/en-us/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm
-
-
-
 # Description
-This script will run a centralised logging server which will bind to an IP address and port detailed in the .env configuration.
+This script will monitor all the compute instances in an Oracle Cloud Tenancy and if any are down will attempt to start them.
 
-The current version extends the standard Python logging library and will be familiar to any Python coder. 
-
-If you do not want this server available to other servers over the network ensure that the loopback address (127.0.0.1) is used in the configuration.
-
-Any script that wants to send logs to the server must use the same LOG_SVR_HASH_KEY as the server, the hash is checked by the server before adding the log data to the log file, and if there is a mismatch the log data is discarded.
-
-# Install Supervisor
-
-Supervisor will automatically start/stop python scripts.  It will also restart scripts if they terminate abnormally.
-
+# Installation
 ```
-apt-get install supervisor -y
-```
+git clone https://github.com/dom-porter/oci-monitor.git
 
-Create a Supervisor config for the logging server
+cd oci-monitor
 
-```
-sudo nano /etc/supervisor/conf.d/loggingserver.conf
+python -m venv venv
+
+source venv/bin/activate
+
+pip install requirements.txt
+
+deactivate
 ```
 
-Example config:
+
+
+# Get your API key and PEM file
+
+Login to your Oracle Cloud account. In the top right, click on your account icon. </br>
+Choose your profile (it should be the first option). </br>
+On the left-hand side of the next screen click API Keys.</br>
+Click the 'Add API Key' button.</br>
+Choose 'Generate API Key Pair' and click the 'Download Private Key' button. Then click the 'Add' button.</br>
+Copy the 'Configuration File Preview'. </br>
+
+# Create the Config
+Rename the config/oracle.ini.example to config/oracle.ini</br>
+Replace the contents with the 'Configuration File Preview' copied earlier.</br>
+
+Place the .pem file in to the /config directory and update the config file with the filename.
 
 ```
-[program:loggingserver]
-directory=/apps/loggingserver/appdata/
-command=/apps/loggingserver/venv/bin/python3 main.py
-autostart=true
-autorestart=true
-```
-
-Tell Supervisor to check for new configs
+[DEFAULT]
+user=ocid1.user.oc1..aaaaaaaa65abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmn
+fingerprint=11:22:33:44:55:66:77:88:99:0a:1b:2c:3d:4e:5f:6g
+tenancy=ocid1.tenancy.oc1..aaaaaaaa5nfwo53cezleyy6t73v6rn6knhu3molvptnl3kcq34l5ztenancy
+region=us-phoenix-1
+key_file=./config/oci_api_key.pem
 
 ```
-sudo supervisorctl reread
+
+# Running
 ```
-
-Tell Supervisor to enact the changes
-
-```
-sudo supervisorctl update
-```
-
-# Python Version
-
-```
-3.10
-```
-
-# Install
-
-```
-rename .envtemplate to .env
-
-pip install -r requirements.txt
-```
-
-# Configuration
-
-| .env Variable    | Description                    | Default   |
-|------------------|:-------------------------------|:----------|
-| LOG_SVR_HASH_KEY | Key used to generate data hash | None      |
-| LOG_SVR_FILE     | Log file path                  | None      |
-| LOG_SVR_IP       | Logging server IP address      | localhost |
-| LOG_SVR_MAX_SIZE | Max size of log file in bytes  | 200000    |
-| LOG_SVR_PORT     | Logging server port            | 9020      |
-| LOG_SVR_DEBUG    | Logging server debug           | False     |
-
-
-# Example Client
-
-The client directory shows how to use the logging server from a python script.  The main thing to note is that SocketHandlerHMAC needs to be imported for it to work.
-
-```
-from handler import SocketHandlerHMAC
+/oci-monitor/venv/bin/python /oci-monitor/main.py
 ```
