@@ -16,8 +16,6 @@ pip install requirements.txt
 deactivate
 ```
 
-
-
 # Get your API key and PEM file
 
 Login to your Oracle Cloud account. In the top right, click on your account icon. </br>
@@ -25,7 +23,7 @@ Choose your profile (it should be the first option). </br>
 On the left-hand side of the next screen click API Keys.</br>
 Click the 'Add API Key' button.</br>
 Choose 'Generate API Key Pair' and click the 'Download Private Key' button. Then click the 'Add' button.</br>
-Copy the 'Configuration File Preview'. </br>
+Copy the 'Configuration File Preview'.
 
 # Create the Config
 Rename the config/oracle.ini.example to config/oracle.ini</br>
