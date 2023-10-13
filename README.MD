@@ -21,7 +21,7 @@ cd ..
 # Get your API key and PEM file
 
 Login to your Oracle Cloud account. In the top right, click on your account icon. </br>
-Choose your profile (it should be the first option). </br>
+Choose your tenancy (it should be the first option). </br>
 On the left-hand side of the next screen click API Keys.</br>
 Click the 'Add API Key' button.</br>
 Choose 'Generate API Key Pair' and click the 'Download Private Key' button. Then click the 'Add' button.</br>
@@ -47,3 +47,6 @@ key_file=./config/oci_api_key.pem
 ```
 ./oci-monitor/venv/bin/python ./oci-monitor/main.py
 ```
+
+## License
+Apache License Version 2.0
