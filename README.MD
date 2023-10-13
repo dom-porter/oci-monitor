@@ -14,6 +14,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 deactivate
+
 ```
 
 # Get your API key and PEM file
@@ -30,6 +31,7 @@ Rename the config/oracle.ini.example to config/oracle.ini</br>
 Replace the contents with the 'Configuration File Preview' copied earlier.</br>
 
 Place the .pem file in to the /config directory and update the config file entry 'key_file=' with the filename.
+
 
 ```
 [DEFAULT]
