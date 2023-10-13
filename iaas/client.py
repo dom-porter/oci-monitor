@@ -39,7 +39,7 @@ class OracleClient:
             self._config = config.from_file(file_location="./config/oracle.ini")
             config.validate_config(self._config)
             self._compute_client = ComputeClient(self._config)
-        except InvalidConfig as e:
+        except InvalidConfig as v:
             raise ClientException("Config in oracle.ini is not valid") from None
         except ConfigFileNotFound as c:
             raise ClientException("Unable to locate config file oracle.ini") from None
