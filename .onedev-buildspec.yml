@@ -1,0 +1,17 @@
+version: 25
+jobs:
+- name: Push to GitHub
+  steps:
+  - !PushRepository
+    name: github-push
+    remoteUrl: https://github.com/dom-porter/oci-monitor.git
+    userName: dominic.porter
+    passwordSecret: access-token
+    force: false
+    condition: ALWAYS
+  triggers:
+  - !BranchUpdateTrigger {}
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
