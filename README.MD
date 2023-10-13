@@ -27,7 +27,7 @@ Click the 'Add API Key' button.</br>
 Choose 'Generate API Key Pair' and click the 'Download Private Key' button. Then click the 'Add' button.</br>
 Copy the 'Configuration File Preview'.
 
-# Create the Config
+# Create Config
 Rename the config/oracle.ini.example to config/oracle.ini</br>
 Replace the contents with the 'Configuration File Preview' copied earlier.</br>
 
