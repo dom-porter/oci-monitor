@@ -51,8 +51,7 @@ class OracleClient:
 
         try:
             vm_instances = self._compute_client.list_instances(compartment_id=self._config["tenancy"]).data
-            return_list = [oracle_vm_factory(vm) for vm in vm_instances]
-            return return_list
+            return [oracle_vm_factory(vm) for vm in vm_instances]
         except ServiceError as s:
             raise ProviderError(
                 f"Failed to fetch list of VMs - '{s.message}'. Check oracle.ini for incorrect values.") from None
