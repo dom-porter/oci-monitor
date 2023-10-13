@@ -5,19 +5,20 @@ from time import gmtime
 from iaas.client import client_factory
 from iaas.enums import Providers
 
-# Configure logging
-handler = logging.handlers.RotatingFileHandler(filename="oci-monitor.log",
-                                               maxBytes=20000,
-                                               backupCount=2,
-                                               encoding="utf-8")
 
-formatter = logging.Formatter(
-    '%(asctime)s %(name)-15s [%(process)s] [%(thread)d] [%(levelname)s] %(message)s')
-formatter.converter = gmtime
-handler.setFormatter(formatter)
+def configure_logging():
+    handler = logging.handlers.RotatingFileHandler(filename="oci-monitor.log",
+                                                   maxBytes=20000,
+                                                   backupCount=2,
+                                                   encoding="utf-8")
 
-# set the root logger level to info
-logging.basicConfig(handlers=[handler], level=logging.INFO)
+    formatter = logging.Formatter(
+        '%(asctime)s %(name)-15s [%(process)s] [%(thread)d] [%(levelname)s] %(message)s')
+    formatter.converter = gmtime
+    handler.setFormatter(formatter)
+
+    # set the root logger level to info
+    logging.basicConfig(handlers=[handler], level=logging.INFO)
 
 
 def main():
@@ -40,4 +41,5 @@ def main():
 
 
 if __name__ == '__main__':
+    configure_logging()
     main()
