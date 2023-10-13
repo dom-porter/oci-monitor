@@ -52,9 +52,9 @@ class OracleClient:
         try:
             vm_instances = self._compute_client.list_instances(compartment_id=self._config["tenancy"]).data
             return [oracle_vm_factory(vm) for vm in vm_instances]
-        except ServiceError as s:
+        except ServiceError as e:
             raise ProviderError(
-                f"Failed to fetch list of VMs - '{s.message}'. Check oracle.ini for incorrect values.") from None
+                f"Failed to fetch list of VMs - '{e.message}'. Check oracle.ini for incorrect values.") from None
 
     def stop_vm(self, vm: VirtualMachine) -> str:
         """ Stops the supplied VM instance """
