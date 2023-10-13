@@ -11,9 +11,11 @@ python -m venv venv
 
 source venv/bin/activate
 
-pip install requirements.txt
+pip install -r requirements.txt
 
 deactivate
+
+cd ..
 ```
 
 # Get your API key and PEM file
@@ -43,5 +45,5 @@ key_file=./config/oci_api_key.pem
 
 # Running
 ```
-/oci-monitor/venv/bin/python /oci-monitor/main.py
+./oci-monitor/venv/bin/python ./oci-monitor/main.py
 ```
