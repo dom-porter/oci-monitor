@@ -12,7 +12,7 @@ handler = logging.handlers.RotatingFileHandler(filename="oci-monitor.log",
                                                encoding="utf-8")
 
 formatter = logging.Formatter(
-    '%(asctime)s %(pathname)s %(name)-15s [%(process)s] [%(thread)d] [%(levelname)s] %(message)s')
+    '%(asctime)s %(name)-15s [%(process)s] [%(thread)d] [%(levelname)s] %(message)s')
 formatter.converter = gmtime
 handler.setFormatter(formatter)
 
@@ -31,7 +31,7 @@ def main():
             client.start_vm(vm)
         else:
             print(f"{vm.display_name} -> {vm.state}")
-            logger.info(f"{vm.display_name} -> {vm.state}")
+            logger.debug(f"{vm.display_name} -> {vm.state}")
 
 
 if __name__ == '__main__':

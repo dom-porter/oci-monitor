@@ -4,7 +4,7 @@ from iaas.enums import Providers
 from iaas.vm import VirtualMachine, oracle_vm_factory
 from oci import config
 from oci.core import ComputeClient, VirtualNetworkClient
-from oci.exceptions import ServiceError, InvalidConfig
+from oci.exceptions import ServiceError, InvalidConfig, ConfigFileNotFound
 
 logger = logging.getLogger("iaas")
 
@@ -37,8 +37,15 @@ class OracleClient:
             config.validate_config(self._config)  # Raises InvalidConfig exception if config not correct - allegedly
             self._compute_client = ComputeClient(self._config)
         except InvalidConfig as e:
-            print(e)
-            logger.error(e)
+            print(f"ERROR: Config in oracle.ini is not valid - {e}")
+            logger.error(f"Config in oracle.ini is not valid - {e}")
+        except ConfigFileNotFound as c:
+            print(f"ERROR: Unable to locate config file oracle.ini, please check file is located in /config directory.")
+            logger.error(f"Unable to locate config file oracle.ini, please check file is located in /config directory.")
+
+
+
+
 
     def get_all_vms(self) -> List:
         """ Returns a list of VirtualMachine class instances """
