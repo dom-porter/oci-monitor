@@ -1,10 +1,13 @@
 import logging
 from typing import Protocol, List
-from iaas.enums import Providers
-from iaas.vm import VirtualMachine, oracle_vm_factory
+
 from oci import config
 from oci.core import ComputeClient, VirtualNetworkClient
-from oci.exceptions import ServiceError, InvalidConfig, ConfigFileNotFound
+from oci.exceptions import ServiceError, InvalidConfig, ConfigFileNotFound, InvalidKeyFilePath
+
+from iaas.enums import Providers
+from iaas.exceptions import ClientException, ProviderError
+from iaas.vm import VirtualMachine, oracle_vm_factory
 
 logger = logging.getLogger("iaas")
 
@@ -34,18 +37,14 @@ class OracleClient:
     def __init__(self):
         try:
             self._config = config.from_file(file_location="./config/oracle.ini")
-            config.validate_config(self._config)  # Raises InvalidConfig exception if config not correct - allegedly
+            config.validate_config(self._config)
             self._compute_client = ComputeClient(self._config)
         except InvalidConfig as e:
-            print(f"ERROR: Config in oracle.ini is not valid - {e}")
-            logger.error(f"Config in oracle.ini is not valid - {e}")
+            raise ClientException("Config in oracle.ini is not valid") from None
         except ConfigFileNotFound as c:
-            print(f"ERROR: Unable to locate config file oracle.ini, please check file is located in /config directory.")
-            logger.error(f"Unable to locate config file oracle.ini, please check file is located in /config directory.")
-
-
-
-
+            raise ClientException("Unable to locate config file oracle.ini") from None
+        except InvalidKeyFilePath as k:
+            raise ClientException("Unable to locate .pem file specified in oracle.ini") from None
 
     def get_all_vms(self) -> List:
         """ Returns a list of VirtualMachine class instances """
@@ -55,9 +54,8 @@ class OracleClient:
             return_list = [oracle_vm_factory(vm) for vm in vm_instances]
             return return_list
         except ServiceError as s:
-            print(f"ERROR: failed to obtain a list of compute VM instances: '{s.message}'")
-            logger.error(f"failed to obtain a list of compute VM instances: '{s.message}'")
-            return []
+            raise ProviderError(
+                f"Failed to fetch list of VMs - '{s.message}'. Check config.ini for incorrect values.") from None
 
     def stop_vm(self, vm: VirtualMachine) -> str:
         """ Stops the supplied VM instance """
@@ -117,8 +115,8 @@ class AWSClient:
 
 
 FACTORIES = {
-    Providers.ORACLE: OracleClient(),
-    Providers.AWS: AWSClient()
+    Providers.ORACLE: OracleClient,
+    Providers.AWS: AWSClient
 }
 
 
@@ -128,4 +126,4 @@ def client_factory(provider: Providers) -> Client:
     Factory does not maintain any of the instances it creates.
     """
 
-    return FACTORIES[provider]
+    return FACTORIES[provider]()
