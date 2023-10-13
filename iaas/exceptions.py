@@ -1,5 +1,3 @@
-
-
 class ClientException(Exception):
     """ Exception for all types of issues raised but the IaaS providers client """
 
@@ -14,4 +12,3 @@ class ProviderError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
-
