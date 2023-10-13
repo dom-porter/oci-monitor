@@ -55,7 +55,7 @@ class OracleClient:
             return return_list
         except ServiceError as s:
             raise ProviderError(
-                f"Failed to fetch list of VMs - '{s.message}'. Check config.ini for incorrect values.") from None
+                f"Failed to fetch list of VMs - '{s.message}'. Check oracle.ini for incorrect values.") from None
 
     def stop_vm(self, vm: VirtualMachine) -> str:
         """ Stops the supplied VM instance """
