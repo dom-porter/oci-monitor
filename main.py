@@ -29,6 +29,7 @@ def main():
             if vm.state.upper() == "STOPPED":
                 print(f"{vm.display_name} not running. Starting...")
                 logger.error(f"{vm.display_name} not running. Starting...")
+
                 client.start_vm(vm)
             else:
                 print(f"{vm.display_name} -> {vm.state}")

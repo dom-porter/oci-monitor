@@ -77,8 +77,6 @@ class OracleClient:
     def get_public_ips(self, vm: VirtualMachine) -> List:
         """ Returns a list of all public IP addresses assigned to the VM instance """
 
-        return_list = []
-
         virtual_network_client = VirtualNetworkClient(self._config)
 
         vnic_attachments = self._compute_client.list_vnic_attachments(
@@ -88,10 +86,7 @@ class OracleClient:
 
         # get a list of vNICs from the vNIC attachment. Possible to have multiple.
         vnics = [virtual_network_client.get_vnic(va.vnic_id).data for va in vnic_attachments]
-        for vnic in vnics:
-            if vnic.public_ip:
-                return_list.append(vnic.public_ip)
-        return return_list
+        return [vnic.public_ip for vnic in vnics if vnic.public_ip]
 
 
 class AWSClient:
