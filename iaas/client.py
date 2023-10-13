@@ -42,7 +42,7 @@ class OracleClient:
         except InvalidConfig as v:
             raise ClientException("Config in oracle.ini is not valid") from None
         except ConfigFileNotFound as c:
-            raise ClientException("Unable to locate config file oracle.ini") from None
+            raise ClientException("Unable to locate config file ./config/oracle.ini") from None
         except InvalidKeyFilePath as k:
             raise ClientException("Unable to locate .pem file specified in oracle.ini") from None
 
