@@ -6,5 +6,5 @@
 ./venv
 *.pem
 *.ini
-
+*.yml
 *.old
